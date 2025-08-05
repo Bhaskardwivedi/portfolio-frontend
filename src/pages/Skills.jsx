@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import skillBg from "../assets/skills.jpg";
+import skillBg from "../assets/skill.jpg";
 
 const Skills = () => {
   const [skillsData, setSkillsData] = useState({});
