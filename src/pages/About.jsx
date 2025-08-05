@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../axios";
+import api from "../../api";  // 👈 your axios instance file
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
