@@ -122,7 +122,7 @@ const Services = () => {
       id="services"
       className="relative min-h-screen py-24 px-4 sm:px-8 lg:px-20 bg-gray-900"
     >
-      <div className="absolute inset-0 z-0 bg-[url('/src/assets/service.jpg')] bg-cover bg-center blur-sm opacity-20" />
+      <div className="absolute inset-0 z-0 bg-[url('/assets/service.jpg')] bg-cover bg-center blur-sm opacity-20" />
       <div className="absolute inset-0 bg-black/10 z-10" />
 
       <div className="relative z-20 max-w-7xl mx-auto">
