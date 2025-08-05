@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import bgImage from '../assets/bg-blogs.jpg';
+import bgImage from '../assets/bg-blog.jpg';
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
