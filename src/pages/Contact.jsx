@@ -38,7 +38,7 @@ const ContactUs = () => {
   return (
     <section
       className="relative min-h-screen bg-cover bg-center bg-no-repeat py-16 px-6"
-      style={{ backgroundImage: "url('/src/assets/contact.jpg')" }} // Change to your actual path
+      style={{ backgroundImage: "url('/assets/contact.jpg')" }} // Change to your actual path
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>

@@ -21,7 +21,7 @@ const About = () => {
     <section
       id="about"
       className="relative bg-cover bg-center bg-no-repeat min-h-screen pt-32 pb-24 px-4 sm:px-8 lg:px-20"
-      style={{ backgroundImage: `url('/src/assets/about.jpg')` }}
+      style={{ backgroundImage: `url('/assets/about.jpg')` }}
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-0" />
 

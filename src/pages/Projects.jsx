@@ -66,7 +66,7 @@ const Projects = () => {
   return (
     <section
       className="relative min-h-screen text-white bg-cover bg-center"
-      style={{ backgroundImage: `url('/src/assets/project.jpg')` }}
+      style={{ backgroundImage: `url('/assets/project.jpg')` }}
     >
       <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-0"></div>
 
