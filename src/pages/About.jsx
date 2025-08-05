@@ -94,12 +94,9 @@ const About = () => {
 
           <a
             href={about.resume}
-            download
-            target="_blank"
-            rel="noopener noreferrer"
             className="inline-block px-5 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold shadow-md hover:scale-105 transition text-sm"
           >
-            Download Resume
+            Download <span className="text-orange-300">CV / Resume</span>
           </a>
 
           <div className="flex flex-wrap gap-2 mt-4">
