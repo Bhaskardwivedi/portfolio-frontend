@@ -8,8 +8,8 @@ const About = () => {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("/api/aboutus/")
+    api
+      .get("/aboutus/")
       .then((res) => setAbout(res.data))
       .catch((err) => console.error("Error fetching About data:", err));
   }, []);
