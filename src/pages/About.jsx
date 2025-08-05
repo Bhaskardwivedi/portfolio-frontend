@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../axios";
+import axios from "axios";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
@@ -8,8 +8,8 @@ const About = () => {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
-    api
-      .get("/aboutus/")
+    axios
+      .get("https://api.bhaskarai.com/api/aboutus/")
       .then((res) => setAbout(res.data))
       .catch((err) => console.error("Error fetching About data:", err));
   }, []);
