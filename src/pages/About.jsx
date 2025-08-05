@@ -54,13 +54,20 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="text-white"
         >
-          <h2 className="text-4xl font-extrabold mb-2 animate-pulse text-orange-100">{about.name}</h2>
-          <h3 className="text-xl text-orange-400 font-semibold mb-4">{about.title}</h3>
-
-          <p className="leading-relaxed text-white mb-4">
+          <div className="inline-block border border-orange-400 rounded-md px-3 py-1 mb-3">
+            <h2 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-500 text-transparent bg-clip-text">
+              {about.name}
+            </h2>
+          </div>
+          <div className="h-2" />
+          <h3 className="text-xl md:text-2xl font-bold text-white bg-white/10 backdrop-blur-sm px-3 py-1 rounded-md inline-block shadow-md">
+            {about.title}
+          </h3>
+          <div className="h-6" />
+          <p className="text-gray-200 italic text-sm tracking-wide">
             {showMore ? about.description : `${about.description.slice(0, 220)}...`}
           </p>
-
+          <div className="h-4" />
           <button
             onClick={() => setShowMore(!showMore)}
             className="text-sm text-orange-300 hover:underline mb-6"
@@ -100,12 +107,13 @@ const About = () => {
           </a>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            {["Python", "SQL", "Django", "Azure", "Power BI", "LangChain", "OpenAI", "FastAPI"].map((tech, i) => (
+            {about?.skills?.map((skill, i) => (
               <span
                 key={i}
-                className="bg-white/20 text-sm px-3 py-1 rounded-full text-orange-200 font-medium shadow-sm"
+                className="bg-white/20 text-sm px-3 py-1 rounded-full text-orange-200 font-medium shadow-sm flex items-center gap-2"
               >
-                {tech}
+                {skill.icon && <span>{skill.icon}</span>}
+                <span>{skill.name}</span>
               </span>
             ))}
           </div>
