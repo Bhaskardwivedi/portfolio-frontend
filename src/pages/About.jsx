@@ -9,7 +9,7 @@ const About = () => {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-production-d996.up.railway.app/api/aboutus/")
+      .get("/api/aboutus/")
       .then((res) => setAbout(res.data))
       .catch((err) => console.error("Error fetching About data:", err));
   }, []);

@@ -11,7 +11,7 @@ const Hero = () => {
 
   useEffect(() => {
     axios
-      .get('https://portfolio-backend-production-d996.up.railway.app/api/aboutus/home-hero/')
+      .get('https://api.bhaskarai.com/api/aboutus/home-hero/')
       .then((res) => setHeroData(res.data))
       .catch((err) => console.error('Error fetching hero data:', err));
   }, []);
