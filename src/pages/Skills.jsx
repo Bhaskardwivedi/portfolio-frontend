@@ -8,7 +8,7 @@ const Skills = () => {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-production-d996.up.railway.app/api/skills/")
+      .get("https://api.bhaskarai.com/api/skills/")
       .then((res) => {
         const grouped = res.data.reduce((acc, skill) => {
           const categoryName = skill.category?.name || "Others";

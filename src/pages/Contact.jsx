@@ -27,7 +27,7 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://192.168.31.164:8000/api/contact/", formData);
+      await axios.post("https://api.bhaskarai.com/api/contact/", formData);
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {

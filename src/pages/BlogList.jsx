@@ -8,7 +8,7 @@ const BlogList = () => {
 
   useEffect(() => {
     axios
-      .get('https://portfolio-backend-production-d996.up.railway.app/api/blogs/')
+      .get('https://api.bhaskarai.com/api/blogs/')
       .then((res) => setBlogs(res.data))
       .catch((err) => console.error('Error fetching blogs:', err));
   }, []);

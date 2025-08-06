@@ -15,7 +15,7 @@ const Footer = () => {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-production-d996.up.railway.app/api/socials/")
+      .get("https://api.bhaskarai.com/api/socials/")
       .then((response) => setSocialLinks(response.data))
       .catch((error) => console.error("Error fetching socials:", error));
   }, []);
@@ -29,7 +29,7 @@ const Footer = () => {
     }
     setLoading(true);
     try {
-      await axios.post("https://portfolio-backend-production-d996.up.railway.app/api/blogs/subscribe/", { email });
+      await axios.post("https://api.bhaskarai.com/api/blogs/subscribe/", { email });
       setSubMsg("✅ Subscribed successfully!");
       setSubColor("text-green-400");
       setEmail("");

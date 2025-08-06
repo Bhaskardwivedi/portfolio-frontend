@@ -84,7 +84,7 @@ const Services = () => {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-production-d996.up.railway.app/api/services/")
+      .get("https://api.bhaskarai.com/api/services/")
       .then((res) => {
         const servicesData = res.data;
 

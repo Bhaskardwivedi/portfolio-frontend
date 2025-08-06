@@ -15,7 +15,7 @@ const Projects = () => {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    axios.get("https://portfolio-backend-production-d996.up.railway.app/api/projects/").then((res) => {
+    axios.get("https://api.bhaskarai.com/api/projects/").then((res) => {
       setProjects(res.data);
     });
   }, []);

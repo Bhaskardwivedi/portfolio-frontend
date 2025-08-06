@@ -99,13 +99,13 @@ const About = () => {
           <div className="flex flex-wrap justify-between gap-y-4 mb-6 text-white text-center">
             {[{
               value: about.total_tech_experience,
-              label: "Years in Tech"
+              label: "📆 Years in Tech"
             }, {
               value: about.total_projects,
-              label: "Projects"
+              label: "💼 Projects"
             }, {
               value: about.total_clients,
-              label: "Clients"
+              label: "🤝 Clients"
             }].map((stat, idx) => (
               <div key={idx} className="w-1/3 hover:scale-105 transition-transform">
                 <p className="text-4xl font-bold text-orange-400">
@@ -136,9 +136,9 @@ const About = () => {
             {about?.skills?.map((skill, i) => (
               <span
                 key={i}
-                className="bg-white/20 text-sm px-3 py-1 rounded-full text-orange-200 font-medium shadow-sm flex items-center gap-2"
+                className="cursor-pointer transition-all duration-300 transform hover:scale-105 hover:bg-orange-500/80 bg-white/20 text-sm px-4 py-2 rounded-full text-orange-100 font-medium shadow-md flex items-center gap-2"
               >
-                {skill.icon && <span>{skill.icon}</span>}
+                {skill.icon && <span className="text-lg">{skill.icon}</span>}
                 <span>{skill.name}</span>
               </span>
             ))}
@@ -215,23 +215,11 @@ const About = () => {
             viewport={{ once: true }}
             className="text-2xl font-bold mb-6 text-center text-orange-400"
           >
-            Highlights & Achievementsss
+            Highlights & Achievements
           </motion.h3>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {[{
-              icon: "✅",
-              text: "Successfully transitioned from ops to data & AI automation in 1 year"
-            }, {
-              icon: "🤖",
-              text: "Built an AI chatbot with feedback learning using LangChain & OpenAI"
-            }, {
-              icon: "📈",
-              text: "Created Power BI dashboards & automation tools in personal projects"
-            }, {
-              icon: "🚀",
-              text: "Currently building real-world projects with Azure, SQL, and Django"
-            }].map((item, idx) => (
+            {about?.highlights?.map((item, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
