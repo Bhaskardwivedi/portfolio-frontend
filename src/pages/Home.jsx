@@ -52,7 +52,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative snap-start min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 lg:px-20 pt-10 pb-10 overflow-hidden bg-cover bg-center"
+      className="relative snap-start min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 lg:px-20 pt-24 pb-10 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: "url('/assets/coding-bg.jpg')" }}
     >
       <Particles
@@ -68,7 +68,8 @@ const Hero = () => {
         transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
       />
 
-      <div className="flex flex-col md:flex-row justify-between items-center w-full min-h-[600px]">
+      <div className="flex flex-col-reverse md:flex-row justify-between items-center w-full min-h-[600px] gap-10">
+        {/* Content Block */}
         <motion.div
           className="w-full md:w-1/2 z-10 bg-white/30 backdrop-blur-md p-6 md:p-10 rounded-3xl shadow-2xl text-center md:text-left border border-white/20 hover:shadow-[0_0_40px_rgba(255,106,0,0.4)] flex flex-col justify-center h-full"
           initial={{ opacity: 0, y: 30 }}
@@ -140,13 +141,14 @@ const Hero = () => {
           </div>
         </motion.div>
 
+        {/* Profile Image */}
         <motion.div
-          className="w-full md:w-1/2 flex justify-center items-center h-full"
+          className="w-full md:w-1/2 flex justify-center items-start mt-10 md:mt-0"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="w-56 h-56 md:w-72 md:h-72 rounded-full border-4 border-orange-500 shadow-xl overflow-hidden relative hover:scale-105 transition-transform duration-500">
+          <div className="w-60 h-60 md:w-72 md:h-72 rounded-full border-4 border-orange-500 shadow-xl overflow-hidden relative hover:scale-105 transition-transform duration-500">
             <img
               src={heroData.hero_image}
               alt={heroData.name}
@@ -157,6 +159,7 @@ const Hero = () => {
         </motion.div>
       </div>
 
+      {/* Testimonials Marquee */}
       {testimonials.length > 0 && (
         <div className="w-full mt-10 overflow-hidden">
           <Marquee speed={40} pauseOnHover={true} gradient={false}>
