@@ -215,7 +215,7 @@ const About = () => {
             viewport={{ once: true }}
             className="text-2xl font-bold mb-6 text-center text-orange-400"
           >
-            Highlights & Achievements
+            Highlights & Achievementsss
           </motion.h3>
 
           <div className="grid gap-4 sm:grid-cols-2">
