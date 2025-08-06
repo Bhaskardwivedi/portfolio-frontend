@@ -6,6 +6,8 @@ import CountUp from "react-countup";
 const About = () => {
   const [about, setAbout] = useState(null);
   const [showMore, setShowMore] = useState(false);
+  const [expandedJobs, setExpandedJobs] = useState({});
+  const colors = ["text-blue-600", "text-purple-500", "text-orange-400"];
 
   useEffect(() => {
     axios
@@ -13,6 +15,13 @@ const About = () => {
       .then((res) => setAbout(res.data))
       .catch((err) => console.error("Error fetching About data:", err));
   }, []);
+
+  const toggleJobDescription = (index) => {
+    setExpandedJobs((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   if (!about)
     return <div className="text-center py-20 text-gray-400">Loading About...</div>;
@@ -31,7 +40,7 @@ const About = () => {
         viewport={{ once: true }}
         transition={{ duration: 1 }}
         variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }}
-        className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-8 bg-white/5 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-2xl"
+        className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-8 bg-white/5 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-2xl px-4 sm:px-10"
       >
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -39,12 +48,14 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="flex justify-center items-center"
         >
-          <div className="rounded-full border-4 border-orange-500 shadow-xl overflow-hidden w-64 h-64 sm:w-72 sm:h-72 hover:scale-105 transition duration-500">
-            <img
-              src={about.aboutus_image}
-              alt={about.name}
-              className="w-full h-full object-cover object-top"
-            />
+          <div className="rounded-full w-64 h-64 sm:w-72 sm:h-72 p-1 bg-gradient-to-tr from-orange-400 via-pink-500 to-yellow-400 animate-pulse shadow-xl hover:scale-105 transition duration-500">
+            <div className="rounded-full overflow-hidden w-full h-full bg-black">
+              <img
+                src={about.aboutus_image}
+                alt={about.name}
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
           </div>
         </motion.div>
 
@@ -60,9 +71,19 @@ const About = () => {
             </h2>
           </div>
           <div className="h-2" />
-          <h3 className="text-xl md:text-2xl font-bold text-white bg-white/10 backdrop-blur-sm px-3 py-1 rounded-md inline-block shadow-md">
-            {about.title}
-          </h3>
+          <h2 className="text-base sm:text-lg md:text-xl mt-2 font-semibold text-gray-700 border-b border-orange-300 inline-block pb-1">
+            {about?.title &&
+              about.title.split(/,| and /).map((title, index, arr) => (
+                <React.Fragment key={index}>
+                  <span className={colors[index % colors.length]}>
+                    {title.trim()}
+                  </span>
+                  {index < arr.length - 1 && (
+                    <span className="text-gray-500 mx-1">|</span>
+                  )}
+                </React.Fragment>
+              ))}
+          </h2>
           <div className="h-6" />
           <p className="text-gray-200 italic text-sm tracking-wide">
             {showMore ? about.description : `${about.description.slice(0, 220)}...`}
@@ -88,15 +109,20 @@ const About = () => {
             }].map((stat, idx) => (
               <div key={idx} className="w-1/3 hover:scale-105 transition-transform">
                 <p className="text-4xl font-bold text-orange-400">
-                  <CountUp end={stat.value} duration={2} />+
+                  <CountUp 
+                    end={stat.value}
+                    duration={2.5}
+                    enableScrollSpy
+                    scrollSpyDelay={70} 
+                  />+
                 </p>
                 <p className="text-sm">{stat.label}</p>
               </div>
             ))}
           </div>
 
-          <p className="text-sm text-white/70 italic mb-3">
-            Currently open for freelance work, part-time projects, or full-time data roles. Let's connect!
+          <p className="text-base text-white/90 font-medium flex items-center gap-2 mb-4">
+            📢 Currently open for freelance work, part-time projects, or full-time data roles.
           </p>
 
           <a
@@ -143,17 +169,33 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: idx * 0.1 }}
             viewport={{ once: true }}
-            className="mb-6 bg-white/5 p-4 rounded-md shadow border-l-4 border-orange-500"
+            className="mb-6 bg-white/5 p-4 rounded-md shadow border-t-2 border-orange-500"
           >
-            <p className="text-sm font-semibold text-orange-300 mb-1">
-              {exp.duration} ({exp.total_years} yrs)
+            <p className="text-sm font-medium text-orange-300 mb-1">
+              📅 {exp.duration} • {exp.total_years} yr{exp.total_years > 1 ? "s" : ""}
             </p>
             <h4 className="text-lg font-bold text-white mb-1">{exp.job_title}</h4>
             <p className="text-base italic font-semibold tracking-wide text-blue-300">
               {exp.company_name}
             </p>
             {exp.description && (
-              <p className="text-sm text-white/80 mt-1">{exp.description}</p>
+              <>
+                <ul className="list-disc pl-5 text-sm text-white/80 mt-1">
+                  {(expandedJobs[idx] ? exp.description : `${exp.description.slice(0, 120)}...`)
+                    .split("•")
+                    .map((line, i) => (
+                      <li key={i}>{line.trim()}</li>
+                    ))}
+                </ul>
+                {exp.description.length > 120 && (
+                  <button
+                    onClick={() => toggleJobDescription(idx)}
+                    className="text-xs text-orange-300 hover:underline mt-1"
+                  >
+                    {expandedJobs[idx] ? "Read Less" : "Read More"}
+                  </button>
+                )}
+              </>
             )}
           </motion.div>
         ))}
