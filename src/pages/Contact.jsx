@@ -15,7 +15,7 @@ const ContactUs = () => {
 
   useEffect(() => {
     axios
-      .get("https://portfolio-backend-production-d996.up.railway.app/api/contact/contact-info/")
+      .get("https://api.bhaskarai.com/api/contact/contact-info/")
       .then((res) => setContactInfo(res.data))
       .catch((err) => console.error("Contact Info Error:", err));
   }, []);
