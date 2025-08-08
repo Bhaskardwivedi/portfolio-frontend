@@ -74,7 +74,7 @@ const Skills = () => {
                         <div className="relative w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-md border border-white/20">
                           <div className="absolute inset-0 rounded-full bg-orange-400/30 animate-ping z-0" />
                           <img
-                            src={`http://192.168.31.164:8000${skill.icon}`}
+                            src={skill.icon}
                             alt={skill.name}
                             className="w-8 h-8 z-10 relative object-contain"
                           />
