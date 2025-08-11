@@ -1,3 +1,4 @@
+// src/components/Footer.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as FaIcons from "react-icons/fa";
@@ -5,6 +6,9 @@ import * as Fa6Icons from "react-icons/fa6";
 import * as SiIcons from "react-icons/si";
 import { motion } from "framer-motion";
 import footerBg from "../assets/footer.jpg";
+
+// 👇 add this
+import ChatWidget from "./ChatWidget"; // adjust path if needed
 
 const Footer = () => {
   const [socialLinks, setSocialLinks] = useState([]);
@@ -48,9 +52,8 @@ const Footer = () => {
     }
   };
 
-  const getIconComponent = (iconName) => {
-    return FaIcons[iconName] || Fa6Icons[iconName] || SiIcons[iconName] || FaIcons["FaEnvelope"];
-  };
+  const getIconComponent = (iconName) =>
+    FaIcons[iconName] || Fa6Icons[iconName] || SiIcons[iconName] || FaIcons["FaEnvelope"];
 
   return (
     <footer
@@ -70,7 +73,7 @@ const Footer = () => {
         viewport={{ once: true }}
         className="relative z-10 max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8"
       >
-        {/* Left Column */}
+        {/* Left */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -82,7 +85,8 @@ const Footer = () => {
             <span className="text-white">.AI</span>
           </h2>
           <p className="text-sm text-gray-300">
-            Transforming ideas into scalable tech.<br />
+            Transforming ideas into scalable tech.
+            <br />
             Let's connect and build together.
           </p>
           <div className="mt-4">
@@ -108,7 +112,7 @@ const Footer = () => {
           </div>
         </motion.div>
 
-        {/* Middle Column */}
+        {/* Middle */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -117,19 +121,17 @@ const Footer = () => {
         >
           <h3 className="text-xl font-semibold text-orange-400 mb-3">Quick Links</h3>
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-            {["Home", "About", "Services", "Skills", "Projects", "Blog", "Contact", "Chat"].map((item) => (
-              <a
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="hover:text-orange-300 transition-all"
-              >
-                {item}
-              </a>
-            ))}
+            {["Home", "About", "Services", "Skills", "Projects", "Blog", "Contact", "Chat"].map(
+              (item) => (
+                <a key={item} href={`/${item.toLowerCase()}`} className="hover:text-orange-300 transition-all">
+                  {item}
+                </a>
+              )
+            )}
           </div>
         </motion.div>
 
-        {/* Right Column */}
+        {/* Right */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -158,15 +160,25 @@ const Footer = () => {
         </motion.div>
       </motion.div>
 
-      {/* Footer Bottom */}
       <motion.div
         className="relative z-10 text-center text-sm text-gray-300 py-4 border-t border-gray-700"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        &copy; {new Date().getFullYear()} <span className="font-semibold text-white">Bhaskar.AI</span> | All Rights Reserved
+        &copy; {new Date().getFullYear()} <span className="font-semibold text-white">Bhaskar.AI</span> | All Rights
+        Reserved
       </motion.div>
+
+      {/* 👇 Floating chat widget (fixed bottom-right) */}
+      <ChatWidget
+        title="AI Assistant"
+        subtitle="Ask anything about my work"
+        welcomeText="Hey! How can I help you today? 😊"
+        position="absolute"            // <— pin inside footer
+        offset={{ bottom: 78, right: 64 }}
+        // position="fixed" // default; use "absolute" to pin inside footer area
+      />
     </footer>
   );
 };

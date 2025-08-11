@@ -11,7 +11,9 @@ import Hero from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Skills from "./pages/Skills";
-import Projects from "./pages/Projects";
+import ProjectsList from "./pages/ProjectsList";
+import ProjectDetail from "./pages/ProjectDetail";
+
 import BlogList from "./pages/BlogList";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
@@ -19,7 +21,16 @@ import Footer from "./components/Footer";
 import FeedbackPage from "./pages/FeedbackForm";
 import axios from "./axios";
 
-// ✅ Helper wrapper to access location outside <Router>
+// ---- helpers ----
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+// ✅ Wrapper so we can use useLocation inside App
 function AppWrapper() {
   return (
     <Router>
@@ -41,6 +52,8 @@ function App() {
 
   return (
     <div className="relative z-0 text-white font-poppins">
+      <ScrollToTop />
+
       {!hideNavFooter && <Navbar />}
 
       <Routes>
@@ -48,7 +61,11 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/skills" element={<Skills />} />
-        <Route path="/projects" element={<Projects />} />
+
+        {/* 🎯 Projects – blog-style listing + detail */}
+        <Route path="/projects" element={<ProjectsList />} />
+        <Route path="/projects/:slug" element={<ProjectDetail />} />
+
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:slug" element={<Blog />} />
         <Route path="/contact" element={<Contact />} />

@@ -148,7 +148,7 @@ const Blog = () => {
           </button>
 
           {/* Comments */}
-          <h2 ref={commentSectionRef} className="text-xl font-semibold mb-2">Comments</h2>
+          <h2 ref={commentSectionRef} className="text-xl font-semibold text-blue-600 mb-2">Comments</h2>
           {comments.length === 0 ? (
             <p className="text-gray-600 mb-4">No comments yet. Be the first!</p>
           ) : (
@@ -224,7 +224,7 @@ const Blog = () => {
       {/* Sticky mini back (mobile comfort) */}
       <Link
         to="/blog"
-        className="fixed bottom-6 left-6 z-40 bg-white/90 border rounded-full px-3 py-2 shadow hover:bg-white"
+        className="fixed bottom-6 left-6 z-40 bg-black/90 border rounded-full px-3 py-2 shadow hover:bg-"
       >
         ← Back
       </Link>
