@@ -100,7 +100,7 @@ export default function ChatWidget({
 
       if (!BASE) throw new Error("API base URL is missing");
 
-      const url = `${BASE}/api/chat/`;
+      const url = `${BASE}/chat/`;
       console.log("Chat POST =>", url);
 
       const res = await fetch(url, {
