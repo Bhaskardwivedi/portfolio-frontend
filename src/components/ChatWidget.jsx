@@ -1,21 +1,39 @@
 // src/components/ChatWidget.jsx
 import React, { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Calendar } from "lucide-react";
+
+/* ===== API BASE: Take only from env or props ===== */
+const pickBase = (propBase) => {
+  const envBase = (import.meta.env?.VITE_API_URL || "").trim();
+  const chosen = propBase?.trim() || envBase;
+  if (!chosen) {
+    console.error("❌ No API base URL provided");
+    return "";
+  }
+  return chosen.replace(/\/+$/, "");
+};
 
 export default function ChatWidget({
   title = "AI Assistant",
-  subtitle = "Ask me anything about Bhaskar.AI",
-  welcomeText = "Hi! How can I help you today? 😊",
-
-  // NEW: control where the widget is positioned
-  position = "fixed",                           // "fixed" | "absolute"
-  offset = { bottom: 24, right: 24 },           // button offset
-  panelOffset = null,                           // popup offset (optional)
+  subtitle = "Ask anything about my work",
+  welcomeText = "Hi! I’m Bhaskar’s AI assistant. How can I help you today? 😊",
+  position = "fixed",
+  offset = { bottom: 24, right: 24 },
+  panelOffset = null,
+  apiBaseUrl = "" // ✅ Pass dynamically if you want
 }) {
+  const BASE = pickBase(apiBaseUrl);
+
   const [open, setOpen] = useState(() => {
     try { return JSON.parse(localStorage.getItem("chat.open") || "false"); }
     catch { return false; }
   });
+
+  const [identity, setIdentity] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("chat.identity") || '{"name":"","email":""}'); }
+    catch { return { name: "", email: "" }; }
+  });
+  const identified = Boolean(identity?.email);
 
   const [messages, setMessages] = useState(() => {
     try {
@@ -29,18 +47,26 @@ export default function ChatWidget({
   });
 
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const [meta, setMeta] = useState(null);
+
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("chat.open", JSON.stringify(open));
-    if (open) setTimeout(() => inputRef.current?.focus(), 150);
-  }, [open]);
+    if (open && identified) setTimeout(() => inputRef.current?.focus(), 150);
+  }, [open, identified]);
 
   useEffect(() => {
     localStorage.setItem("chat.messages", JSON.stringify(messages));
-    listRef.current?.scrollTo({ top: 999999, behavior: "smooth" });
+    listRef.current?.scrollTo({ top: 9e9, behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem("chat.identity", JSON.stringify(identity));
+  }, [identity]);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
@@ -48,26 +74,77 @@ export default function ChatWidget({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const send = (msg) => {
-    const m = (msg ?? text).trim();
-    if (!m) return;
-    setMessages((old) => [...old, { from: "user", text: m, t: Date.now() }]);
-    setText("");
-    setTimeout(() => {
-      const reply = getBotReply(m);
-      setMessages((old) => [...old, { from: "bot", text: reply, t: Date.now() }]);
-    }, 600);
+  const btnStyle = { position, bottom: offset?.bottom ?? 24, right: offset?.right ?? 24 };
+  const popupStyle = {
+    position,
+    right: (panelOffset?.right ?? offset?.right ?? 24),
+    bottom: (panelOffset?.bottom ?? ((offset?.bottom ?? 24) + 64)),
   };
 
-  const getBotReply = (m) => {
-    const q = m.toLowerCase();
-    if (q.includes("meet") || q.includes("call"))
-      return "Sure — share a time window and your email. I’ll send a calendar invite 📅";
-    if (q.includes("price") || q.includes("pricing"))
-      return "Pricing depends on scope. Send some details of your project and I’ll estimate ranges.";
-    if (q.includes("resume") || q.includes("cv"))
-      return "You can download the latest CV from the About section. Want me to paste the link?";
-    return "Got it! I’ll note this. Anything else you’d like to discuss?";
+  /* ---------- API call ---------- */
+  const send = async (msg) => {
+    const m = (msg ?? text).trim();
+    if (!m) return;
+
+    if (!identified) {
+      setApiError("Please enter your name & email to start.");
+      return;
+    }
+    setApiError("");
+
+    setMessages((old) => [...old, { from: "user", text: m, t: Date.now() }]);
+    setText("");
+
+    try {
+      setLoading(true);
+
+      if (!BASE) throw new Error("API base URL is missing");
+
+      const url = `${BASE}/api/chat/`;
+      console.log("Chat POST =>", url);
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "omit",
+        body: JSON.stringify({
+          name: identity.name || "Guest",
+          email: identity.email,
+          message: m,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        console.warn("Chat RESP <", res.status, ">", body.slice(0, 200));
+        setApiError(`API ${res.status}`);
+        setMessages((old) => [
+          ...old,
+          { from: "bot", text: "Sorry, I’m having trouble right now.", t: Date.now() },
+        ]);
+        return;
+      }
+
+      const data = await res.json();
+      const reply = data?.bot_reply || "(No reply)";
+      setMessages((old) => [...old, { from: "bot", text: reply, t: Date.now() }]);
+
+      setMeta({
+        trigger_contact: data?.trigger_contact,
+        trigger_meeting: data?.trigger_meeting,
+        meeting_link: data?.meeting_link,
+        calendar_link: data?.calendar_link,
+        nlp_tags: data?.nlp_tags,
+      });
+    } catch (e) {
+      setApiError(e?.message || "Network error");
+      setMessages((old) => [
+        ...old,
+        { from: "bot", text: "Network error. Please try again.", t: Date.now() },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const Quick = ({ label }) => (
@@ -78,20 +155,6 @@ export default function ChatWidget({
       {label}
     </button>
   );
-
-  // ---- positioning (works for fixed OR absolute) ----
-  const btnStyle = {
-    position,                      // "fixed" or "absolute"
-    bottom: offset?.bottom ?? 24,
-    right: offset?.right ?? 24,
-  };
-
-  const popupStyle = {
-    position,
-    right: (panelOffset?.right ?? offset?.right ?? 24),
-    // place panel a bit above the button (button ~56px tall => +64)
-    bottom: (panelOffset?.bottom ?? ((offset?.bottom ?? 24) + 64)),
-  };
 
   return (
     <>
@@ -108,12 +171,8 @@ export default function ChatWidget({
         <MessageCircle className="w-7 h-7" />
       </button>
 
-      {/* Overlay only when we use viewport-fixed */}
       {open && position === "fixed" && (
-        <div
-          className="fixed inset-0 z-[55] bg-black/20 backdrop-blur-[1px]"
-          onClick={() => setOpen(false)}
-        />
+        <div className="fixed inset-0 z-[55] bg-black/20 backdrop-blur-[1px]" onClick={() => setOpen(false)} />
       )}
 
       {/* Popup */}
@@ -154,29 +213,85 @@ export default function ChatWidget({
             </div>
           ))}
 
+          {meta?.meeting_link && (
+            <div className="flex items-start gap-2 text-sm bg-green-50 border border-green-200 text-gray-800 rounded-lg p-3">
+              <Calendar className="w-4 h-4 mt-0.5" />
+              <div>
+                Meeting ready:{" "}
+                <a className="underline" href={meta.meeting_link} target="_blank" rel="noreferrer">Join link</a>
+                {meta?.calendar_link && (
+                  <>
+                    {" "} | <a className="underline" href={meta.calendar_link} target="_blank" rel="noreferrer">Add to Calendar</a>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2 pt-2">
+            <Quick label="Website development" />
+            <Quick label="Data engineering" />
+            <Quick label="Automation" />
             <Quick label="Book a meeting" />
-            <Quick label="Career question" />
-            <Quick label="Pricing" />
           </div>
+
+          {loading && (
+            <div className="flex items-center gap-2 text-gray-500 text-sm pt-1">
+              <Loader2 className="w-4 h-4 animate-spin" /> thinking…
+            </div>
+          )}
+          {apiError && <div className="text-xs text-red-600 pt-1">{apiError}</div>}
         </div>
 
-        {/* Input */}
-        <form
-          onSubmit={(e) => { e.preventDefault(); send(); }}
-          className="flex items-center gap-2 p-3 border-t bg-white"
-        >
-          <input
-            ref={inputRef}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type your message…"
-            className="flex-1 text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none focus:border-orange-400"
-          />
-          <button type="submit" className="h-10 w-10 rounded-lg bg-black text-white flex items-center justify-center hover:bg-gray-800" aria-label="Send">
-            <Send className="w-4 h-4" />
-          </button>
-        </form>
+        {/* Identity gate OR chat input */}
+        {!identified ? (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!identity.email) return;
+              localStorage.setItem("chat.identity", JSON.stringify(identity));
+            }}
+            className="grid grid-cols-1 gap-2 p-3 border-t bg-white"
+          >
+            <input
+              value={identity.name}
+              onChange={(e) => setIdentity((s) => ({ ...s, name: e.target.value }))}
+              placeholder="Your name"
+              autoComplete="name"
+              className="text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500"
+            />
+            <input
+              value={identity.email}
+              onChange={(e) => setIdentity((s) => ({ ...s, email: e.target.value }))}
+              placeholder="Your email"
+              type="email"
+              autoComplete="email"
+              className="text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500"
+            />
+            <button type="submit" className="h-10 rounded-lg bg-black text-white hover:bg-gray-800 text-sm">
+              Start chat
+            </button>
+            <p className="text-[11px] text-gray-500">We use your email only to send meeting invites.</p>
+          </form>
+        ) : (
+          <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex items-center gap-2 p-3 border-t bg-white">
+            <input
+              ref={inputRef}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Type your message…"
+              className="flex-1 text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500"
+            />
+            <button
+              type="submit"
+              disabled={loading || !text.trim()}
+              className="h-10 w-10 rounded-lg bg-black text-white flex items-center justify-center hover:bg-gray-800 disabled:opacity-60"
+              aria-label="Send"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            </button>
+          </form>
+        )}
       </div>
     </>
   );

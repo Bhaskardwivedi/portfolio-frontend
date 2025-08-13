@@ -20,7 +20,7 @@ import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import FeedbackPage from "./pages/FeedbackForm";
 import axios from "./axios";
-
+import TestChat from "./pages/TestChat";
 // ---- helpers ----
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -70,6 +70,7 @@ function App() {
         <Route path="/blog/:slug" element={<Blog />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/test-chat" element={<TestChat />} />
       </Routes>
 
       {!hideNavFooter && <Footer />}

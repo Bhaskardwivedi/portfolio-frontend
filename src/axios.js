@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://api.bhaskarai.com/api",
+  baseURL: import.meta.env.VITE_API_URL || "https://api.bhaskarai.com/api",
   timeout: 15000,
 });
-
+console.log("DEBUG VITE_API_URL =", import.meta.env.VITE_API_URL);
 // Only attach creds/CSRF for unsafe methods
 api.interceptors.request.use((config) => {
   const m = (config.method || "get").toLowerCase();
