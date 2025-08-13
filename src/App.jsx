@@ -21,6 +21,10 @@ import Footer from "./components/Footer";
 import FeedbackPage from "./pages/FeedbackForm";
 import axios from "./axios";
 import TestChat from "./pages/TestChat";
+
+// ✅ import chat widget
+import ChatWidget from "./components/ChatWidget"; 
+
 // ---- helpers ----
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -30,7 +34,6 @@ function ScrollToTop() {
   return null;
 }
 
-// ✅ Wrapper so we can use useLocation inside App
 function AppWrapper() {
   return (
     <Router>
@@ -62,7 +65,6 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/skills" element={<Skills />} />
 
-        {/* 🎯 Projects – blog-style listing + detail */}
         <Route path="/projects" element={<ProjectsList />} />
         <Route path="/projects/:slug" element={<ProjectDetail />} />
 
@@ -73,7 +75,19 @@ function App() {
         <Route path="/test-chat" element={<TestChat />} />
       </Routes>
 
+      {/* Footer hide on /feedback */}
       {!hideNavFooter && <Footer />}
+
+      {/* ✅ Floating chat widget – hide on /feedback */}
+      {!hideNavFooter && (
+        <ChatWidget
+          title="AI Assistant"
+          subtitle="Ask anything about my work"
+          welcomeText="Hey! How can I help you today? 😊"
+          position="fixed"
+          offset={{ bottom: 100, right: 20 }}
+        />
+      )}
     </div>
   );
 }

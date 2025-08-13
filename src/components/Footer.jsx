@@ -7,9 +7,6 @@ import * as SiIcons from "react-icons/si";
 import { motion } from "framer-motion";
 import footerBg from "../assets/footer.jpg";
 
-// 👇 add this
-import ChatWidget from "./ChatWidget"; // adjust path if needed
-
 const Footer = () => {
   const [socialLinks, setSocialLinks] = useState([]);
   const [email, setEmail] = useState("");
@@ -169,16 +166,6 @@ const Footer = () => {
         &copy; {new Date().getFullYear()} <span className="font-semibold text-white">Bhaskar.AI</span> | All Rights
         Reserved
       </motion.div>
-
-      {/* 👇 Floating chat widget (fixed bottom-right) */}
-      <ChatWidget
-        title="AI Assistant"
-        subtitle="Ask anything about my work"
-        welcomeText="Hey! How can I help you today? 😊"
-        position="absolute"            // <— pin inside footer
-        offset={{ bottom: 78, right: 64 }}
-        // position="fixed" // default; use "absolute" to pin inside footer area
-      />
     </footer>
   );
 };
